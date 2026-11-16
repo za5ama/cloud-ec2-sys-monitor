@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EC2 Live Monitor</title>
+    <style>
+        body {
+            background-color: #0d1117;
+            color: #c9d1d9;
+            font-family: 'Courier New', monospace;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+        h1 { color: #58a6ff; margin-bottom: 5px; }
+        p { color: #8b949e; margin-bottom: 30px; }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(2, 160px);
+            gap: 15px;
+        }
+        .card {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 20px;
+            text-align: center;
+        }
+        .label { font-size: 0.85rem; color: #8b949e; }
+        .value { font-size: 1.8rem; font-weight: bold; color: #3fb950; margin-top: 8px; }
+    </style>
+</head>
+<body>
+    <h1>// EC2 LIVE TELEMETRY</h1>
+    <p>Refreshing every 2 seconds...</p>
+    <div class="grid">
+        <div class="card"><div class="label">CPU LOAD</div><div class="value" id="cpu">--%</div></div>
+        <div class="card"><div class="label">RAM USAGE</div><div class="value" id="ram">--%</div></div>
+        <div class="card"><div class="label">DISK USAGE</div><div class="value" id="disk">--%</div></div>
+        <div class="card"><div class="label">UPTIME</div><div class="value" id="uptime">--</div></div>
+    </div>
+
+    <script>
+        async function fetchStats() {
+            const res = await fetch('/api/stats');
+            const data = await res.json();
+            document.getElementById('cpu').innerText = data.cpu + '%';
+            document.getElementById('ram').innerText = data.memory + '%';
+            document.getElementById('disk').innerText = data.disk + '%';
+            document.getElementById('uptime').innerText = data.uptime;
+        }
+        fetchStats();
+        setInterval(fetchStats, 2000);
+    </script>
+</body>
+</html>
+
